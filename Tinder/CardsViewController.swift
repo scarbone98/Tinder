@@ -9,7 +9,6 @@
 import UIKit
 
 class CardsViewController: UIViewController {
-    
     @IBOutlet weak var cardView: UIView!
     @IBOutlet weak var image: UIImageView!
     var cardInitialCenter: CGPoint!
@@ -22,11 +21,17 @@ class CardsViewController: UIViewController {
     @IBAction func didPan(_ sender: UIPanGestureRecognizer) {
         let velocity = sender.velocity(in: view)
         let translation = sender.translation(in: view)
+        let location = sender.location(in: view)
         if sender.state == .began {
-            cardInitialCenter = cardView.center
+            cardInitialCenter = location
         } else if sender.state == .changed {
-            cardView.transform = CGAffineTransform(translationX: translation.x, y: 0)
-            cardView.transform = cardView.transform.rotated(by: CGFloat(Double(translation.x)/10 * Double.pi / 180))
+            if cardInitialCenter.y >= cardView.frame.height/2{
+                cardView.transform = CGAffineTransform(translationX: translation.x, y: 0)
+                cardView.transform = cardView.transform.rotated(by: CGFloat(-Double(translation.x)/10 * Double.pi / 180))
+            }else{
+                cardView.transform = CGAffineTransform(translationX: translation.x, y: 0)
+                cardView.transform = cardView.transform.rotated(by: CGFloat(Double(translation.x)/10 * Double.pi / 180))
+            }
         } else if sender.state == .ended {
             if translation.x > 50 {
                 UIView.animate(withDuration:0.4, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1, options:[] ,
